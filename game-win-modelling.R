@@ -100,31 +100,14 @@ test[-1] = scale(test[-1])
 
 #---------------------- MODELLING ----------------------------------
 
-#--------------------------------
-# Support vector machine approach
-#--------------------------------
+#-----------------------
+# Random forest approach
+#-----------------------
 
 # Specify formula and fit model
 
 n <- names(train)
 the_formula <- as.formula(paste("did_i_win ~", paste(n[!n %in% "did_i_win"], collapse = " + ")))
-
-model <- svm(formula = the_formula, 
-             data = train,
-             kernel = 'radial')
-
-# Evaluate training performance
-
-confusionMatrix(train$did_i_win, predict(model))
-
-# Evaluate testing performance
-
-test_pred <- predict(model, newdata = test)
-confusionMatrix(table(test_pred, test$did_i_win))
-
-#-----------------------
-# Random forest approach
-#-----------------------
 
 # Fit model
 
