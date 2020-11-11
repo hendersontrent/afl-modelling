@@ -1,7 +1,7 @@
 #------------------------------------------
 # This script sets out to produce run a
-# Bayesian ordinal regression to predict
-# Brownlow winner
+# Bayesian ordinal regression to extract
+# priors
 #
 # NOTE: This script requires setup.R to
 # have been run first
@@ -65,41 +65,32 @@ tmp2 <- tmp1 %>%
 K <- unique(tmp2$brownlow_votes)
 N <- nrow(tmp2)
 y <- tmp2$brownlow_votes
-#win <- tmp2$did_i_win
-#kicks <- tmp2$kicks
-#marks <- tmp2$marks
-#goals <- tmp2$goals
-#behinds <- tmp2$behinds
-#contest_possess <- tmp2$contested_possessions
-#contest_mark <- tmp2$contested_marks
-#time_on_ground <- tmp2$time_on_ground
-#inside_50s <- tmp2$inside_50s
-#clearances <- tmp2$clearances
-#handballs <- tmp2$handballs
-
-X <- tmp2 %>%
-  dplyr::select(c(did_i_win, kicks, marks, goals, behinds, contest_possess, contest_mark,
-                  time_on_ground, inside_50s, clearances, handballs))
+win <- tmp2$did_i_win
+kicks <- tmp2$kicks
+marks <- tmp2$marks
+goals <- tmp2$goals
+behinds <- tmp2$behinds
+contest_possess <- tmp2$contested_possessions
+contest_mark <- tmp2$contested_marks
+time_on_ground <- tmp2$time_on_ground
+inside_50s <- tmp2$inside_50s
+clearances <- tmp2$clearances
+handballs <- tmp2$handballs
 
 stan_data <- list(K = K,
                   N = N,
                   y = y,
-                  X = X)
-
-#stan_data <- list(K = K,
-#                  N = N,
-#                  y = y,
-#                  win = win,
-#                  kicks = kicks,
-#                  marks = marks,
-#                  goals = goals,
-#                  behinds = behinds,
-#                  contest_possess = contest_possess,
-#                  contest_mark = contest_mark,
-#                  time_on_ground = time_on_ground,
-#                  inside_50s = inside_50s,
-#                  clearances = clearances,
-#                  handballs = handballs)
+                  win = win,
+                  kicks = kicks,
+                  marks = marks,
+                  goals = goals,
+                  behinds = behinds,
+                  contest_possess = contest_possess,
+                  contest_mark = contest_mark,
+                  time_on_ground = time_on_ground,
+                  inside_50s = inside_50s,
+                  clearances = clearances,
+                  handballs = handballs)
 
 # Run model and track time taken
 
@@ -111,6 +102,6 @@ system.time({
               seed = 123)
 })
 
-#---------------------- OUTPUTS ------------------------------------
+#---------------------- EXTRACT PRIORS FOR FUTURE USE --------------
 
 

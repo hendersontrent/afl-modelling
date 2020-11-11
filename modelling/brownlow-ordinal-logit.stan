@@ -8,10 +8,20 @@
 //
 
 data {
-  int<lower=2> K; // number of Bronload vote categories (0 votes, 1 vote, 2 votes, 3 votes)
+  int<lower=2> K; // number of Bronlow vote categories (0 votes, 1 vote, 2 votes, 3 votes)
   int<lower=1> N; // number of observations
   int<lower=1> D; // number of predictor variables
-  matrix[N, D] X; // model matrix of predictor variables
+  vector[N] win;
+  vector[N] kicks;
+  vector[N] marks;
+  vector[N] goals;
+  vector[N] behinds;
+  vector[N] contest_possess;
+  vector[N] contest_mark;
+  vector[N] time_on_ground;
+  vector[N] inside_50s;
+  vector[N] clearances;
+  vector[N] handballs;
   int<lower=1,upper=K> y[N]; // response variable (Brownlow votes)
 }
 
@@ -22,11 +32,8 @@ parameters {
 
 model {
   for (n in 1:N)
-    y[n] ~ ordered_logistic(beta * X[n], c);
-}
-
-// Generate predictions for new season using the constructed model above
-
-generated quantities {
-  
+    y[n] ~ ordered_logistic(beta[1] * win[n] + beta[2] * kicks[n] + beta[3] * marks[n], 
+    beta[4] * goals[n] + beta[5] * behinds[n] + beta[6] * contest_possess[n], 
+    beta[7] * contest_mark[n] + beta[8] * time_on_ground[n] + beta[9] * inside_50s[n], 
+    beta[10] * clearances[n] + beta[11] * handballs[n], c);
 }
