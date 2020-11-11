@@ -57,8 +57,8 @@ tmp2 <- tmp1 %>%
          TRUE                    ~ "Remove")) %>%
   filter(winner != "Remove") %>%
   mutate(did_i_win = case_when(
-         playing_for == winner ~ 1,
-         TRUE                  ~ 0)) %>%
+         playing_for == winner ~ "Win",
+         TRUE                  ~ "Lose")) %>%
   mutate(did_i_win = as.factor(did_i_win)) %>%
   group_by(season, round, did_i_win) %>%
   summarise(kicks = sum(kicks),
@@ -95,8 +95,8 @@ test <- tmp2[-train_ind,]
 
 # Scale features
 
-train[-1] = scale(train[-1]) 
-test[-1] = scale(test[-1]) 
+train[-1] = round(scale(train[-1]), digits = 3) # rounding helps with plot & doesn't impact model
+test[-1] = round(scale(test[-1]), digits = 3)
 
 #---------------------- MODELLING ----------------------------------
 
@@ -132,7 +132,7 @@ my_importance <- rownames_to_column(my_importance, var = "variable") %>%
   mutate(variable = str_to_sentence(variable)) %>% # Clean up names to read nicely
   mutate(variable = gsub("_", " ", variable))
 
-# Plotting
+# Variable importance plot
 
 p <- my_importance %>%
   ggplot(aes(x = reorder(variable, MeanDecreaseAccuracy), y = MeanDecreaseAccuracy)) +
@@ -149,4 +149,13 @@ print(p)
 
 CairoPNG("output/rf-importance.png", 800, 600)
 print(p)
+dev.off()
+
+# Decision tree plot
+
+CairoPNG("output/rf-tree.png", 1500, 800)
+reprtree:::plot.getTree(model_rf)
+title(main = "Random forest model decision tree\nAll variables scaled prior to modelling.",
+      sub = "Source: CRAN package fitzRoy which pulls data from www.afltables.com\nAnalysis: Orbisant Analytics.",
+      cex.main = 2, font.main = 2)
 dev.off()
