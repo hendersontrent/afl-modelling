@@ -129,7 +129,8 @@ confusionMatrix(table(test_pred_rf, test$did_i_win))
 
 my_importance <- as.data.frame(importance(model_rf))
 my_importance <- rownames_to_column(my_importance, var = "variable") %>%
-  mutate(variable = str_to_sentence(variable)) # Clean up names to read nicely
+  mutate(variable = str_to_sentence(variable)) %>% # Clean up names to read nicely
+  mutate(variable = gsub("_", " ", variable))
 
 # Plotting
 
