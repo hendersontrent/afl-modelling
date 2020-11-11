@@ -148,6 +148,8 @@ my_importance <- as.data.frame(importance(model_rf))
 my_importance <- rownames_to_column(my_importance, var = "variable") %>%
   mutate(variable = str_to_sentence(variable)) # Clean up names to read nicely
 
+# Plotting
+
 p <- my_importance %>%
   ggplot(aes(x = reorder(variable, MeanDecreaseAccuracy), y = MeanDecreaseAccuracy)) +
   geom_bar(stat = "identity", fill = "slategray1") +
@@ -155,8 +157,12 @@ p <- my_importance %>%
        subtitle = "Model used the variables to predict whether the game was won or not.\nData was aggregated to game-level sums per team.",
        x = "Variable",
        y = "Mean Decrease in Accuracy",
-       caption = "Source: CRAN package fitzRoy. Analysis: Orbisant Analytics.") +
+       caption = "Source: CRAN package fitzRoy which pulls data from www.afltables.com\nAnalysis: Orbisant Analytics.") +
   scale_y_continuous(labels = function(x) paste0(x,"%")) +
   coord_flip() +
   my_theme
 print(p)
+
+CairoPNG("output/rf-importance.png", 800, 600)
+print(p)
+dev.off()
