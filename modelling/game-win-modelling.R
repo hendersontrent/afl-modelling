@@ -125,24 +125,42 @@ confusionMatrix(train$did_i_win, predict(model_rf))
 test_pred_rf <- predict(model_rf, newdata = test)
 confusionMatrix(table(test_pred_rf, test$did_i_win))
 
-# Extract variable importance
+#------------------------------
+# # Extract variable importance
+#------------------------------
+
+# General mean decrease in accuracy
 
 my_importance <- as.data.frame(importance(model_rf))
 my_importance <- rownames_to_column(my_importance, var = "variable") %>%
   mutate(variable = str_to_sentence(variable)) %>% # Clean up names to read nicely
   mutate(variable = gsub("_", " ", variable))
 
+# Make a function to compute relative variable importance
+
+make_imp_tbl <- function(rf) {
+  imp_rf <- as_tibble(randomForest::importance(rf, type = 1, scale = FALSE)) %>%
+    mutate(variable = rownames(randomForest::importance(rf))) %>%
+    dplyr::select(variable, everything()) %>%
+    arrange(desc(MeanDecreaseAccuracy)) %>%
+    mutate(rel_imp = MeanDecreaseAccuracy / max(MeanDecreaseAccuracy)) %>%
+    mutate(variable = str_to_sentence(variable)) %>% # Clean up names to read nicely
+    mutate(variable = gsub("_", " ", variable))
+  return(imp_rf)
+}
+
+my_importance_rel <- make_imp_tbl(model_rf)
+
 # Variable importance plot
 
-p <- my_importance %>%
-  ggplot(aes(x = reorder(variable, MeanDecreaseAccuracy), y = MeanDecreaseAccuracy)) +
+p <- my_importance_rel %>%
+  ggplot(aes(x = reorder(variable, rel_imp), y = rel_imp)) +
   geom_bar(stat = "identity", fill = "slategray1") +
-  labs(title = "Variable importance of variables in random forest model",
-       subtitle = "Model used the variables to predict whether the game was won or not.\nData was aggregated to game-level sums per team.",
+  labs(title = "Variable importance of inputs in random forest model",
+       subtitle = "Model aimed to predict whether the game was won or not. Data was aggregated to game-level sums per team.\nImportance calculated based on relative mean decrease in accuracy against the maximum.",
        x = "Variable",
-       y = "Mean Decrease in Accuracy",
+       y = "Variable Importance",
        caption = "Source: CRAN package fitzRoy which pulls data from www.afltables.com\nAnalysis: Orbisant Analytics.") +
-  scale_y_continuous(labels = function(x) paste0(x,"%")) +
   coord_flip() +
   my_theme
 print(p)
@@ -151,7 +169,9 @@ CairoPNG("output/rf-importance.png", 800, 600)
 print(p)
 dev.off()
 
+#-------------------
 # Decision tree plot
+#-------------------
 
 CairoPNG("output/rf-tree.png", 1500, 800)
 reprtree:::plot.getTree(model_rf)
