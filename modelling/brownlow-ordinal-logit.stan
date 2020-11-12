@@ -8,7 +8,7 @@
 //
 
 data {
-  int<lower=2> K; // number of Bronlow vote categories (0 votes, 1 vote, 2 votes, 3 votes)
+  int<lower=2> K; // number of Brownlow vote categories (0 votes, 1 vote, 2 votes, 3 votes)
   int<lower=1> N; // number of observations
   int<lower=1> D; // number of predictor variables
   vector[N] win;
