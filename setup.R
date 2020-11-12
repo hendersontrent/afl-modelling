@@ -31,7 +31,9 @@ options(scipen = 999)
 
 my_theme <- theme_bw() +
   theme(legend.position = "bottom",
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "#189AB4"),
+        strip.text = element_text(colour = "white"))
 
 # Create an output folder if none exists:
 
