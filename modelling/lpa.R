@@ -113,7 +113,6 @@ plot_the_classes <- function(data, class_of_choice){
 # Run function
 
 p <- plot_the_classes(class_freqs, "Class 1")
-print(p)
 p1 <- plot_the_classes(class_freqs, "Class 2")
 p2 <- plot_the_classes(class_freqs, "Class 3")
 p3 <- plot_the_classes(class_freqs, "Class 4")
