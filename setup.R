@@ -10,6 +10,7 @@
 # Load packages
 
 library(tidyverse)
+library(data.table)
 library(broom)
 library(janitor)
 library(fitzRoy)

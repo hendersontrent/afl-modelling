@@ -8,6 +8,11 @@
 #------------------------------------------
 
 # Define a reusable function
+#' @param start_date start of season in format YYYY-MM-DD
+#' @param end_date start of season in format YYYY-MM-DD
+#' 
+#' @author Trent Henderson
+#' 
 
 pull_afl_data <- function(start_date, end_date){
   tmp <- get_afltables_stats(start_date = start_date, end_date = end_date) %>%
